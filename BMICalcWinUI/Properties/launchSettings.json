@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BMICalcWinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "BMICalcWinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

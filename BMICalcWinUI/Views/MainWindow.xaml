@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="BMICalcWinUI.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BMICalcWinUI"
+    xmlns:converter="using:BMICalcWinUI.Converter"
+    xmlns:vm="using:BMICalcWinUI.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:control="using:CommunityToolkit.WinUI.UI.Controls"
+    mc:Ignorable="d"
+    Title="BMI Calculator">
+
+    <!-- WinUI3 does not have "Resources" and "DataContext" in "Window"
+    <Window.Resources>
+        <local:BoolToStringConverter x:Key="BooleanToStringConverter" FalseValue="" TrueValue="*" />
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+    -->
+
+    <Grid Margin="10">
+        <Grid.Resources>
+            <Style x:Key="TextBlockRightStyle" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+            <converter:FormattedStringConverter  x:Key="stringConverter" />
+            <converter:BoolToStringConverter x:Key="fileModifiedConverter" FalseValue="" TrueValue="*" />
+        </Grid.Resources>
+        <Grid.DataContext>
+            <vm:MainWindowViewModel />
+        </Grid.DataContext>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="名前" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0"/>
+        <TextBox Text="{Binding Name, Mode=TwoWay}" Margin="2" Grid.Column="0" Grid.Row="1"/>
+        <TextBlock Text="身長 (m)" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
+        <TextBox Text="{Binding Height, Mode=TwoWay}" Margin="2" Grid.Column="1" Grid.Row="1"/>
+        <TextBlock Text="体重 (kg)" VerticalAlignment="Center" Grid.Column="2" Grid.Row="0"/>
+        <TextBox Text="{Binding Weight, Mode=TwoWay}" Margin="2" Grid.Column="2" Grid.Row="1"/>
+        <Button Content="BMI計算" Margin="2" Command="{Binding AddBMIDataCommand}" Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <control:DataGrid ItemsSource="{Binding BmiList}"  AutoGenerateColumns="False" Grid.Row="2" Grid.ColumnSpan="4">
+            <control:DataGrid.Columns>
+                <control:DataGridCheckBoxColumn Width="40" />
+                <control:DataGridTextColumn Binding="{Binding Name}" Header="名前" Width="150" />
+                <control:DataGridTextColumn Binding="{Binding Height}" ElementStyle="{StaticResource TextBlockRightStyle}" Header="身長(m)" Width="100" />
+                <control:DataGridTextColumn Binding="{Binding Weight}" ElementStyle="{StaticResource TextBlockRightStyle}" Header="体重(kg)" Width="100" />
+                <control:DataGridTextColumn Binding="{Binding Bmi,Converter={StaticResource stringConverter}, ConverterParameter=F1}" ElementStyle="{StaticResource TextBlockRightStyle}" Header="BMI" Width="100" IsReadOnly="True" />
+                <control:DataGridTextColumn Binding="{Binding OptimalWeight, Converter={StaticResource stringConverter}, ConverterParameter=F1}" ElementStyle="{StaticResource TextBlockRightStyle}" Header="適正体重(kg)" Width="120" IsReadOnly="True" />
+            </control:DataGrid.Columns>
+        </control:DataGrid>
+
+        <TextBox Margin="2" Grid.Column="0" Grid.Row="3" />
+        <Button Margin="2" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="前を検索" />
+        <Button Margin="2" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="次を検索" />
+        <Button Margin="2" Grid.Column="3" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="削除" />
+
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="4">
+            <TextBlock VerticalAlignment="Center" Text="{Binding FilePath}" />
+            <TextBlock VerticalAlignment="Center" Text="{Binding Modified, Converter={StaticResource fileModifiedConverter}}" />
+        </StackPanel>
+        <Button Command="{Binding NewFileCommand}" Margin="2" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="新規作成" />
+        <Button Command="{Binding LoadFileCommand}" Margin="2" Grid.Column="2" Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="開く" />
+        <Button Command="{Binding SaveFileCommand}" Margin="2" Grid.Column="3" Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="保存" />
+    </Grid>
+</Window>
